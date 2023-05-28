@@ -16,13 +16,15 @@ class CNNet(nn.Module):
             nn.Conv2d(128,256,3,padding=1), # 256,16,16
             nn.MaxPool2d(2)                 # 256,8,8
         )
+        self.fc = nn.Sequential(
+            nn.Linear(16384,4)  # 4 = no,very mild, mild, moderate
+        )
 
         
     def forward(self,x):
         out = self.layer(x)
-        print(out.shape)
         out = out.view(out.size(0),-1)    # flattten [255*8*8]
-        print(out.shape)
+        out = self.fc(out)
         return out
         
         
