@@ -8,6 +8,8 @@ import sys #sys.exit()
 from dataset.data_preset import AlzheimerDataset
 from model.CNNet import CNNet
 
+import matplotlib.pyplot as plt
+
 ################
 # Configuration #
 ################
@@ -77,21 +79,24 @@ def training(epochs, batch_size, learning_rate, model, device):
             cost.backward()
             optimizer.step()
 
-            avg_cost += cost/total_batch
+            
             print(cost.item())
 
-        losses.append(avg_cost)
+            losses.append(cost.item())
 
-        print("---Epoch : {:4d} cost : {:8} ---".format(epoch + 1, avg_cost))
+        print("---Epoch : {:4d} cost : {:8} ---".format(epoch + 1, cost.item()))
+
+    plt.plot(losses)
+    plt.show()
 
     return model
 
-epochs, batch_size, learning_rate = configuration()
-device, model = train_model()
-
-torch.save(training(epochs, batch_size, learning_rate, model, device), f"{os.path.dirname}/trained_model/CNNet_{epochs}_{learning_rate}.pth")
-
-
+def go_test():
+    test_select = input("Do you want to test model right now? (y/n) : ")
+    if test_select == 'y':
+        return True
+    else:
+        sys.exit()
 
 
 
