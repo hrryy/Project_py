@@ -6,8 +6,7 @@ import os # file path
 import sys #sys.exit()
 
 from dataset.data_preset import AlzheimerDataset
-from model.CNNet import CNNet
-
+import model.CNNet as structure
 import matplotlib.pyplot as plt
 
 ################
@@ -26,12 +25,17 @@ def configuration():
 # Ready to Train Model #
 ########################
 
-def train_model():
+def train_model(select):
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     print(device)
 
-    model = CNNet().to(device)
-    print(model)
+    if select == '1':
+        model = structure.CNNet().to(device)
+        print(model)
+    elif select == '2':
+        model = structure.CNNet_convtrans().to(device)
+        print(model)
+
     return device,model
 
 ########################
