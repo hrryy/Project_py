@@ -4,21 +4,26 @@ import torch.nn.init
 from test_util import *  # *: all     import *: all function
 from train_util import *
 
-def test():
-    device, model = test_model(run_mode)
+def test(trained_model):
+    device, model = test_model(run_mode,trained_model)
     print(testing(1,model,device))
 
 
 
 def go_train():
     epochs, batch_size, learning_rate = configuration()
-    device, model = train_model()
+    select = input("[Select Model]\n\n [1] CNNet \n [2] CNNet Convolution Transform \n\n Select : ")
+    device, model = train_model(select=select)
 
-    torch.save(training(epochs, batch_size, learning_rate, model, device),
-                f"{os.path.dirname}/trained_model/CNNet_{epochs}_{learning_rate}.pth")
+    trained_model = training(epochs, batch_size, learning_rate, model, device)
+    if select == '1':
+        torch.save(trained_model,f"{os.path.dirname}/trained_model/CNNet_{epochs}_{learning_rate}.pth")
+    elif select == '2':
+        torch.save(trained_model,f"{os.path.dirname}/trained_model/CNNet_convT_{epochs}_{learning_rate}.pth")
+                
     print("<===================== Train and Save the Model Successfully =======================>\n")
     if go_test():
-        test()
+        test(trained_model)
 
 #RUN MODE
 print(""" 

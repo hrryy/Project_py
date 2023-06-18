@@ -12,7 +12,7 @@ from model.CNNet import CNNet
 # Ready To Test Model #
 #######################
 
-def test_model(run_mode):
+def test_model(run_mode,trained_model):
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     print(f"device : {device}")
 
@@ -24,7 +24,7 @@ def test_model(run_mode):
     if os.path.isfile(trained_path):
         model = torch.load(trained_path).to(device)
     else:
-        model = CNNet().to(device)
+        model = trained_model.to(device)
     
     print(model)
     return device, model
@@ -56,15 +56,19 @@ def testing(batch_size, model, device):
 
     with torch.no_grad():
 
+        i = 0
+        correct_prediction = 0
+
         for X,Y in data_loader:   #X: img, Y: label
             
             X_test = X.to(device)
             Y_test = Y.to(device)
 
-            prediction = model(X)
-            correct_prediction = torch.argmax(prediction, 1) == Y_test
-            accuracy = correct_prediction.float().mean()
-            
-        print("---accuracy : {:8} ---".format(accuracy.item()))
+            prediction = model(X_test)
+            correct_prediction += torch.argmax(prediction, 1) == Y_test
+            i += 1
+
+        accuracy = float(correct_prediction)/float(i)*100
+        print("---accuracy : {:.4} % ---".format(accuracy))
 
     return 'Done'
